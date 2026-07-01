@@ -12,7 +12,7 @@ class HomeController extends Controller
     {
         $hotProducts  = Product::hot()->latest()->get();
         $hotNews      = NewsArticle::hot()->latest()->take(4)->get();
-        $categories   = Category::homepage()->with('products')->get();
+        $categories   = Category::homepage()->with('products', 'children.products')->get();
 
         return view('frontend.home', compact('hotProducts', 'hotNews', 'categories'));
     }

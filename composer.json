@@ -29,9 +29,7 @@
             "app/Services/Shipping/ShippingProvider.php",
             "app/Services/Shipping/ShippingStrategy.php",
             "app/Services/Cart/CartPrice.php",
-            "app/Services/Order/OrderDirector.php",
-            "app/Services/ProductService.php",
-            "app/Services/AuthFacade.php"
+            "app/Services/Order/OrderDirector.php"
         ]
     },
     "autoload-dev": {

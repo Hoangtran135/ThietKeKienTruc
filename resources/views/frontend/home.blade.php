@@ -28,7 +28,7 @@
             </a>
         </div>
         <div class="products-grid">
-            @foreach($category->products->take(6) as $product)
+            @foreach(($category->children->count() ? $category->children->flatMap->products : $category->products)->take(6) as $product)
                 @include('frontend.partials.product-card')
             @endforeach
         </div>
