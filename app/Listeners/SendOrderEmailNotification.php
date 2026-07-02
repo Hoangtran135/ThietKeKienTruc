@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Listeners;
-
 use App\Events\OrderPlaced;
 use Illuminate\Support\Facades\Log;
 
