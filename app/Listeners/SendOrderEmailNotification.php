@@ -6,6 +6,7 @@ use App\Mail\OrderConfirmationMail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
+
 /**
  * Observer: gửi email xác nhận đơn hàng sau khi đặt hàng thành công.
  */

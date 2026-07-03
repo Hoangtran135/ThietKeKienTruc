@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Events\OrderPlaced;
 use Illuminate\Support\Facades\Log;
 
+
 /**
  * Observer: gửi SMS xác nhận đơn hàng (demo - ghi log thay vì gửi SMS thật).
  */

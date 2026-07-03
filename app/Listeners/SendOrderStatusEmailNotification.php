@@ -7,6 +7,7 @@ use App\Mail\OrderStatusChangedMail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
+
 /**
  * Observer: gửi email thông báo khi trạng thái đơn hàng thay đổi.
  */
