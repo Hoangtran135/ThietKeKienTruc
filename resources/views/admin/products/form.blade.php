@@ -60,6 +60,10 @@
                         <input type="number" name="discount" class="form-control" value="{{ old('discount', $product->discount ?? 0) }}" min="0" max="100">
                     </div>
                     <div class="form-group">
+                        <label>Tồn kho <span class="text-danger">*</span></label>
+                        <input type="number" name="stock" class="form-control" value="{{ old('stock', $product->stock ?? 100) }}" min="0" required>
+                    </div>
+                    <div class="form-group">
                         <label>Ảnh sản phẩm</label>
                         @if(isset($product) && $product->photo)
                             <div style="margin-bottom:8px;">

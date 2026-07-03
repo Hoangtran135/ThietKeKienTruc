@@ -7,9 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    const STATUS_PENDING   = 0;
+    const STATUS_CONFIRMED = 1;
+    const STATUS_SHIPPING  = 2;
+    const STATUS_DELIVERED = 3;
+    const STATUS_CANCELLED = 4;
+
     protected $fillable = [
         'customer_id', 'status', 'payment_method', 'payment_status',
-        'shipping_method', 'shipping_fee', 'voucher_code', 'discount_amount',
+        'shipping_method', 'shipping_fee', 'voucher_code', 'discount_amount', 'note',
     ];
 
     protected $casts = [
@@ -31,7 +37,29 @@ class Order extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return $this->status === 1 ? 'Đã giao' : 'Chờ xử lý';
+        return match($this->status) {
+            self::STATUS_CONFIRMED => 'Đã xác nhận',
+            self::STATUS_SHIPPING  => 'Đang giao hàng',
+            self::STATUS_DELIVERED => 'Đã giao hàng',
+            self::STATUS_CANCELLED => 'Đã huỷ',
+            default                => 'Chờ xử lý',
+        };
+    }
+
+    public function getStatusColorAttribute(): string
+    {
+        return match($this->status) {
+            self::STATUS_CONFIRMED => 'info',
+            self::STATUS_SHIPPING  => 'warning',
+            self::STATUS_DELIVERED => 'success',
+            self::STATUS_CANCELLED => 'danger',
+            default                => 'default',
+        };
+    }
+
+    public function isCancellable(): bool
+    {
+        return $this->status === self::STATUS_PENDING;
     }
 
     public function getSubtotalAttribute(): float

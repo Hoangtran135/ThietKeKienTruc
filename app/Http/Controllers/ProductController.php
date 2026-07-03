@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Rating;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -26,7 +27,7 @@ class ProductController extends Controller
 
     public function detail(int $id)
     {
-        $product   = Product::with(['ratings', 'category'])->findOrFail($id);
+        $product   = Product::with(['ratings.customer', 'category'])->findOrFail($id);
         $avgRating = $product->ratings->avg('star') ?? 0;
         $related   = Product::where('category_id', $product->category_id)
                              ->where('id', '!=', $id)
@@ -34,12 +35,40 @@ class ProductController extends Controller
                              ->take(6)
                              ->get();
 
-        return view('frontend.products.detail', compact('product', 'avgRating', 'related'));
+        $customer      = Auth::guard('customer')->user();
+        $canRate       = false;
+        $alreadyRated  = false;
+
+        if ($customer) {
+            $alreadyRated = $customer->hasRated($id);
+            $canRate      = !$alreadyRated && $customer->hasPurchased($id);
+        }
+
+        return view('frontend.products.detail', compact('product', 'avgRating', 'related', 'canRate', 'alreadyRated'));
     }
 
     public function rating(RatingRequest $request, int $id)
     {
-        Rating::create(['product_id' => $id, 'star' => $request->star]);
+        $customer = Auth::guard('customer')->user();
+
+        if (!$customer) {
+            return back()->with('error', 'Vui lòng đăng nhập để đánh giá.');
+        }
+
+        if ($customer->hasRated($id)) {
+            return back()->with('error', 'Bạn đã đánh giá sản phẩm này rồi.');
+        }
+
+        if (!$customer->hasPurchased($id)) {
+            return back()->with('error', 'Bạn cần mua sản phẩm này trước khi đánh giá.');
+        }
+
+        Rating::create([
+            'product_id'  => $id,
+            'customer_id' => $customer->id,
+            'star'        => $request->star,
+            'review'      => $request->review,
+        ]);
 
         return back()->with('success', 'Cảm ơn bạn đã đánh giá!');
     }

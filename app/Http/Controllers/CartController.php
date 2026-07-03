@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Services\CartService;
 use App\Services\CheckoutFacade;
 use App\Services\Shipping\ShippingFeeCalculator;
@@ -36,9 +37,20 @@ class CartController extends Controller
         return view('frontend.cart', compact('cart', 'total', 'shippingOptions'));
     }
 
-    public function add(int $id)
+    public function add(Request $request, int $id)
     {
+        $product = Product::findOrFail($id);
+
         $this->cartService->add($id);
+        $cartCount = count($this->cartService->get());
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success'    => true,
+                'message'    => "Đã thêm \"{$product->name}\" vào giỏ hàng!",
+                'cart_count' => $cartCount,
+            ]);
+        }
 
         return redirect()->route('cart.index')->with('success', 'Đã thêm vào giỏ hàng!');
     }

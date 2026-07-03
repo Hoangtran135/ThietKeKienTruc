@@ -28,7 +28,7 @@
 
         <form action="{{ route('cart.add', $product->id) }}" method="POST">
             @csrf
-            <button type="submit" class="btn-add-cart">
+            <button type="submit" class="btn-add-cart" data-ajax-cart>
                 <i class="fa fa-cart-plus"></i> Thêm vào giỏ
             </button>
         </form>

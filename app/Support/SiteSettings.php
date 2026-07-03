@@ -2,6 +2,8 @@
 
 namespace App\Support;
 
+use App\Models\Voucher;
+
 /**
  * Singleton Pattern: chỉ một instance cấu hình chung của shop
  * (ngưỡng freeship, phí ship mặc định, danh sách voucher...) được
@@ -60,6 +62,21 @@ class SiteSettings
         }
 
         $code = strtoupper(trim($code));
+
+        // Ưu tiên lấy từ DB
+        try {
+            $voucher = Voucher::findValid($code);
+            if ($voucher) {
+                return [
+                    'type'  => $voucher->type === 'fixed' ? 'amount' : $voucher->type,
+                    'value' => $voucher->value,
+                    'label' => $voucher->type_label,
+                    'model' => $voucher,
+                ];
+            }
+        } catch (\Exception) {
+            // fallback nếu bảng chưa tồn tại
+        }
 
         return $this->vouchers[$code] ?? null;
     }

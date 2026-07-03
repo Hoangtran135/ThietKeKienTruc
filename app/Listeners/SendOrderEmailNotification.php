@@ -3,21 +3,29 @@
 namespace App\Listeners;
 
 use App\Events\OrderPlaced;
+use App\Mail\OrderConfirmationMail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 /**
- * Observer: gửi email xác nhận đơn hàng (demo - ghi log thay vì gửi mail thật).
+ * Observer: gửi email xác nhận đơn hàng sau khi đặt hàng thành công.
  */
 class SendOrderEmailNotification
 {
     public function handle(OrderPlaced $event): void
     {
-        $order    = $event->order;
+        $order    = $event->order->load(['customer', 'details.product']);
         $customer = $order->customer;
 
-        Log::info("[Email] Gửi email xác nhận đơn hàng #{$order->id} tới {$customer?->email}", [
-            'order_id' => $order->id,
-            'total'    => $order->total,
-        ]);
+        if (!$customer?->email) {
+            return;
+        }
+
+        try {
+            Mail::to($customer->email)->send(new OrderConfirmationMail($order));
+            Log::info("[Email] Đã gửi xác nhận đơn #{$order->id} tới {$customer->email}");
+        } catch (\Exception $e) {
+            Log::error("[Email] Lỗi gửi email đơn #{$order->id}: " . $e->getMessage());
+        }
     }
 }

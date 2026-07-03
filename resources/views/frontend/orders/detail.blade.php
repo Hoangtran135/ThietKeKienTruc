@@ -35,7 +35,6 @@
             <div class="myorder-info-row">
                 <span>Trạng thái</span>
                 <span class="myorder-status-badge myorder-status-{{ $order->status }}">
-                    <i class="fa fa-{{ $order->status ? 'check-circle' : 'clock' }} me-1"></i>
                     {{ $order->status_label }}
                 </span>
             </div>
@@ -46,6 +45,32 @@
                     {{ $order->payment_status_label }}
                 </span>
             </div>
+
+            {{-- Timeline trạng thái --}}
+            @if($order->status != 4)
+            <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+                @php $steps = [0=>'Đặt hàng',1=>'Xác nhận',2=>'Đang giao',3=>'Đã nhận']; @endphp
+                <div style="display:flex;justify-content:space-between;position:relative;">
+                    <div style="position:absolute;top:10px;left:10%;right:10%;height:2px;background:var(--border);z-index:0;"></div>
+                    <div style="position:absolute;top:10px;left:10%;height:2px;z-index:1;background:var(--primary);
+                         width:{{ min(100, ($order->status / 3) * 80) }}%;transition:width .5s;"></div>
+                    @foreach($steps as $s => $lbl)
+                    <div style="text-align:center;flex:1;z-index:2;">
+                        <div style="width:22px;height:22px;border-radius:50%;margin:0 auto;
+                             background:{{ $order->status >= $s ? 'var(--primary)' : 'var(--border)' }};
+                             color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;">
+                            {{ $order->status > $s ? '✓' : ($s+1) }}
+                        </div>
+                        <div style="font-size:10px;color:{{ $order->status >= $s ? 'var(--primary)' : 'var(--gray-500)' }};margin-top:4px;">{{ $lbl }}</div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @else
+            <div style="margin-top:12px;padding:8px 12px;background:#fde8e8;border-radius:6px;font-size:13px;color:#c62828;">
+                <i class="fa fa-times-circle"></i> Đơn hàng đã bị huỷ.
+            </div>
+            @endif
         </div>
 
         {{-- Vận chuyển & Thanh toán --}}

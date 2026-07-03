@@ -62,6 +62,14 @@ class CheckoutFacade
         // 5. Observer: thông báo cho các listener (gửi email/sms...)
         Event::dispatch(new OrderPlaced($order));
 
+        // 6. Tăng used_count nếu voucher từ DB
+        if ($voucherCode) {
+            $voucherData = SiteSettings::getInstance()->findVoucher($voucherCode);
+            if (isset($voucherData['model'])) {
+                $voucherData['model']->increment('used_count');
+            }
+        }
+
         return [
             'order'          => $order,
             'paymentMethod'  => $paymentMethod,

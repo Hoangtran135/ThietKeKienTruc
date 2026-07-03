@@ -9,7 +9,7 @@
     </div>
     <div class="card-body" style="padding:0;">
         <table class="table table-hover" style="margin:0;">
-            <thead><tr><th>#</th><th>Ảnh</th><th>Tên sản phẩm</th><th>Giá</th><th>Danh mục</th><th>Hot</th><th>Thao tác</th></tr></thead>
+            <thead><tr><th>#</th><th>Ảnh</th><th>Tên sản phẩm</th><th>Giá</th><th>Danh mục</th><th>Tồn kho</th><th>Hot</th><th>Thao tác</th></tr></thead>
             <tbody>
                 @forelse($products as $product)
                 <tr>
@@ -18,6 +18,15 @@
                     <td>{{ Str::limit($product->name, 50) }}</td>
                     <td>{{ number_format($product->price) }}₫</td>
                     <td>{{ $product->category->name ?? '—' }}</td>
+                    <td>
+                        @if($product->stock <= 0)
+                            <span class="label label-danger">Hết hàng</span>
+                        @elseif($product->stock <= 10)
+                            <span class="label label-warning">{{ $product->stock }}</span>
+                        @else
+                            <span class="label label-success">{{ $product->stock }}</span>
+                        @endif
+                    </td>
                     <td>{!! $product->hot ? '<span class="label label-danger">HOT</span>' : '—' !!}</td>
                     <td>
                         <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-xs btn-warning">Sửa</a>

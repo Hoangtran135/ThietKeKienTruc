@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminNewsController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\Admin\AdminVoucherController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\OrderController;
@@ -62,6 +63,12 @@ Route::prefix('account')->name('account.')->group(function () {
     Route::get('/register',  [AccountController::class, 'registerForm'])->name('register');
     Route::post('/register', [AccountController::class, 'register'])->name('register.post');
     Route::post('/logout',   [AccountController::class, 'logout'])->name('logout');
+
+    Route::middleware('customer.auth')->group(function () {
+        Route::get('/profile',           [AccountController::class, 'profile'])->name('profile');
+        Route::post('/profile',          [AccountController::class, 'updateProfile'])->name('profile.update');
+        Route::post('/change-password',  [AccountController::class, 'changePassword'])->name('password.change');
+    });
 });
 
 // Giỏ hàng
@@ -105,8 +112,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('news',      AdminNewsController::class);
         Route::resource('users',     AdminUserController::class);
 
-        Route::get('orders',               [AdminOrderController::class, 'index'])->name('orders.index');
-        Route::get('orders/{id}',          [AdminOrderController::class, 'detail'])->name('orders.detail');
-        Route::post('orders/{id}/deliver', [AdminOrderController::class, 'deliver'])->name('orders.deliver');
+        Route::get('orders',                  [AdminOrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{id}',             [AdminOrderController::class, 'detail'])->name('orders.detail');
+        Route::post('orders/{id}/deliver',    [AdminOrderController::class, 'deliver'])->name('orders.deliver');
+        Route::post('orders/{id}/status',     [AdminOrderController::class, 'updateStatus'])->name('orders.status');
+        Route::get('orders/export/csv',       [AdminOrderController::class, 'exportCsv'])->name('orders.export');
+
+        Route::resource('vouchers', AdminVoucherController::class);
     });
 });

@@ -19,4 +19,22 @@ class Customer extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    public function hasPurchased(int $productId): bool
+    {
+        return $this->orders()
+            ->whereIn('status', [1, 2, 3]) // confirmed, shipping, delivered
+            ->whereHas('details', fn($q) => $q->where('product_id', $productId))
+            ->exists();
+    }
+
+    public function hasRated(int $productId): bool
+    {
+        return $this->ratings()->where('product_id', $productId)->exists();
+    }
 }
