@@ -25,8 +25,8 @@ class AdminUserController extends Controller
     public function store(StoreAdminUserRequest $request)
     {
         Admin::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
+            'name' => $request->name,
+            'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
@@ -42,7 +42,7 @@ class AdminUserController extends Controller
 
     public function update(UpdateAdminUserRequest $request, int $id)
     {
-        $user       = Admin::findOrFail($id);
+        $user = Admin::findOrFail($id);
         $user->name = $request->name;
 
         if ($request->filled('password')) {

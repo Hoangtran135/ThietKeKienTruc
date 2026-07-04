@@ -15,13 +15,12 @@
 
 <div class="detail-wrap">
     <div class="row g-4">
-        {{-- Image --}}
+
         <div class="col-md-5">
             <img src="{{ $product->photo_url }}" alt="{{ $product->name }}" class="detail-img"
                  onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'400\'%3E%3Crect width=\'400\' height=\'400\' fill=\'%23f5f5f5\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23ccc\' font-size=\'60\'%3E📦%3C/text%3E%3C/svg%3E'">
         </div>
 
-        {{-- Info --}}
         <div class="col-md-7">
             <p class="detail-category">
                 Danh mục:
@@ -31,7 +30,6 @@
             </p>
             <h1 class="detail-name">{{ $product->name }}</h1>
 
-            {{-- Rating summary --}}
             <div class="d-flex align-items-center gap-2 mb-3">
                 @php $stars = round($avgRating); @endphp
                 <div style="color:#ffc107;font-size:16px;">
@@ -42,7 +40,6 @@
                 <span style="font-size:13px;color:var(--gray-700);">{{ number_format($avgRating,1) }}/5 ({{ $product->ratings->count() }} đánh giá)</span>
             </div>
 
-            {{-- Price --}}
             <div class="detail-price-box">
                 @if($product->discount > 0)
                     <div class="detail-price-original">{{ number_format($product->price) }}₫</div>
@@ -61,7 +58,6 @@
             <p class="detail-desc">{!! $product->description !!}</p>
             <div style="margin-bottom:12px;">{!! $product->stock_label !!}</div>
 
-            {{-- Actions --}}
             <div class="d-flex gap-2 flex-wrap">
                 <form action="{{ route('cart.add', $product->id) }}" method="POST">
                     @csrf
@@ -77,7 +73,6 @@
                 </form>
             </div>
 
-            {{-- Rating form --}}
             <div class="rating-wrap">
                 <h5><i class="fa fa-star" style="color:#ffc107;"></i> Đánh giá sản phẩm</h5>
                 @if($canRate)
@@ -114,7 +109,6 @@
     </div>
 </div>
 
-{{-- Detail content --}}
 @if($product->content)
     <div class="detail-content-box">
         <h3>Mô tả chi tiết</h3>
@@ -122,7 +116,6 @@
     </div>
 @endif
 
-{{-- Customer Reviews --}}
 @if($product->ratings->count())
 <div class="detail-content-box" style="margin-top:24px;">
     <h3>Đánh giá từ khách hàng ({{ $product->ratings->count() }})</h3>
@@ -152,7 +145,6 @@
 </div>
 @endif
 
-{{-- Related products --}}
 @if($related->count())
     <div style="margin-top:32px;">
         <div class="mm-section-title">

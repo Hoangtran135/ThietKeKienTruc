@@ -5,10 +5,6 @@ namespace App\Services;
 use App\Models\Product;
 use Illuminate\Support\Facades\Session;
 
-/**
- * Singleton Pattern: đảm bảo chỉ tồn tại một instance WishlistService
- * trong suốt vòng đời request, tránh đọc/ghi session wishlist nhiều lần.
- */
 class WishlistService
 {
     private static ?WishlistService $instance = null;
@@ -18,7 +14,7 @@ class WishlistService
     public static function getInstance(): self
     {
         if (self::$instance === null) {
-            self::$instance = new self();
+            self::$instance = new self;
         }
 
         return self::$instance;
@@ -33,11 +29,11 @@ class WishlistService
     {
         $wishlist = $this->get();
 
-        if (!isset($wishlist[$productId])) {
-            $product              = Product::findOrFail($productId);
+        if (! isset($wishlist[$productId])) {
+            $product = Product::findOrFail($productId);
             $wishlist[$productId] = [
-                'id'    => $product->id,
-                'name'  => $product->name,
+                'id' => $product->id,
+                'name' => $product->name,
                 'photo' => $product->photo,
                 'price' => $product->final_price,
             ];

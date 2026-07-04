@@ -2,25 +2,16 @@
 
 namespace App\Providers;
 
-use App\Events\OrderPlaced;
-use App\Events\OrderStatusChanged;
-use App\Listeners\SendOrderEmailNotification;
-use App\Listeners\SendOrderSmsNotification;
-use App\Listeners\SendOrderStatusEmailNotification;
 use App\Models\NewsArticle;
 use App\Models\Product;
 use App\Observers\NewsArticleObserver;
 use App\Observers\ProductObserver;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    public function register(): void
-    {
-        //
-    }
+    public function register(): void {}
 
     public function boot(): void
     {
@@ -28,8 +19,5 @@ class AppServiceProvider extends ServiceProvider
         Product::observe(ProductObserver::class);
         NewsArticle::observe(NewsArticleObserver::class);
 
-        Event::listen(OrderPlaced::class, SendOrderEmailNotification::class);
-        Event::listen(OrderPlaced::class, SendOrderSmsNotification::class);
-        Event::listen(OrderStatusChanged::class, SendOrderStatusEmailNotification::class);
     }
 }

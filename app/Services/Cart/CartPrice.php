@@ -2,12 +2,6 @@
 
 namespace App\Services\Cart;
 
-/**
- * Decorator Pattern: BaseCartPrice là thành phần gốc (giá thuần).
- * Các Decorator (PercentDiscount, AmountDiscount, Freeship) “bọc”
- * thêm từng loại khuyến mãi mà không sửa class gốc, có thể
- * chồng nhiều lớp lên nhau.
- */
 interface CartPriceComponent
 {
     public function getSubtotal(): int;
@@ -21,9 +15,6 @@ interface CartPriceComponent
     public function getDescription(): string;
 }
 
-/**
- * Thành phần gốc: tổng tiền hàng + phí vận chuyển, chưa áp khuyến mãi.
- */
 class BaseCartPrice implements CartPriceComponent
 {
     public function __construct(
@@ -82,19 +73,24 @@ abstract class CartPriceDecorator implements CartPriceComponent
     }
 }
 
-/**
- * Giảm theo phần trăm trên tổng tiền hàng. Ví dụ: voucher GIAM10 -> -10%.
- */
 class PercentDiscountDecorator extends CartPriceDecorator
 {
-    public function __construct(CartPriceComponent $inner, private int $percent, private string $voucherCode)
-    {
+    public function __construct(
+        CartPriceComponent $inner,
+        private int $percent,
+        private string $voucherCode,
+        private ?int $maxDiscount = null,
+    ) {
         parent::__construct($inner);
     }
 
     public function getDiscount(): int
     {
         $extra = (int) round($this->getSubtotal() * $this->percent / 100);
+
+        if ($this->maxDiscount !== null && $this->maxDiscount > 0) {
+            $extra = min($extra, $this->maxDiscount);
+        }
 
         return $this->inner->getDiscount() + $extra;
     }
@@ -105,9 +101,6 @@ class PercentDiscountDecorator extends CartPriceDecorator
     }
 }
 
-/**
- * Giảm một số tiền cố định. Ví dụ: voucher GIAM50K -> -50.000đ.
- */
 class AmountDiscountDecorator extends CartPriceDecorator
 {
     public function __construct(CartPriceComponent $inner, private int $amount, private string $voucherCode)
@@ -122,13 +115,10 @@ class AmountDiscountDecorator extends CartPriceDecorator
 
     public function getDescription(): string
     {
-        return "Voucher {$this->voucherCode}: giảm " . number_format($this->amount) . 'đ';
+        return "Voucher {$this->voucherCode}: giảm ".number_format($this->amount).'đ';
     }
 }
 
-/**
- * Miễn phí vận chuyển: phí ship được "che" thành 0.
- */
 class FreeshipDecorator extends CartPriceDecorator
 {
     public function __construct(CartPriceComponent $inner, private string $voucherCode)

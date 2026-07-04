@@ -17,7 +17,6 @@
 
 @section('content')
 
-{{-- Stat Cards --}}
 <div class="row" style="margin-bottom:20px;">
     <div class="col-md-2 col-sm-4">
         <div class="stat-card blue">
@@ -54,7 +53,6 @@
     </div>
 </div>
 
-{{-- Trạng thái đơn hàng --}}
 <div class="row" style="margin-bottom:20px;">
     @php
     $statusMap = [0=>'Chờ xử lý',1=>'Đã xác nhận',2=>'Đang giao',3=>'Đã giao',4=>'Đã huỷ'];
@@ -73,7 +71,7 @@
 </div>
 
 <div class="row">
-    {{-- Biểu đồ doanh thu --}}
+
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">Doanh thu 12 tháng gần nhất</div>
@@ -83,7 +81,6 @@
         </div>
     </div>
 
-    {{-- Top sản phẩm --}}
     <div class="col-md-4">
         <div class="card">
             <div class="card-header">Top 5 sản phẩm bán chạy</div>
@@ -111,7 +108,6 @@
     </div>
 </div>
 
-{{-- Đơn hàng gần đây --}}
 <div class="card" style="margin-top:20px;">
     <div class="card-header">
         Đơn hàng gần đây

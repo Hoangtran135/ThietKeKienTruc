@@ -24,7 +24,7 @@
     <div class="myorder-list">
         @foreach($orders as $order)
         <div class="myorder-card">
-            {{-- Header --}}
+
             <div class="myorder-card-header">
                 <div class="d-flex align-items-center gap-3 flex-wrap">
                     <span class="myorder-id">#{{ str_pad($order->id, 6, '0', STR_PAD_LEFT) }}</span>
@@ -44,7 +44,6 @@
                 </div>
             </div>
 
-            {{-- Products preview --}}
             <div class="myorder-products">
                 @foreach($order->details->take(3) as $detail)
                 <div class="myorder-product-item">
@@ -68,7 +67,6 @@
                 @endif
             </div>
 
-            {{-- Footer --}}
             <div class="myorder-card-footer">
                 <div class="myorder-meta">
                     <span><i class="fa fa-truck me-1" style="color:var(--gray-500);"></i>{{ $order->shipping_method_label }}</span>

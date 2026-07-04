@@ -25,8 +25,8 @@ class AdminCategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         Category::create([
-            'name'            => $request->name,
-            'parent_id'       => $request->integer('parent_id', 0),
+            'name' => $request->name,
+            'parent_id' => $request->integer('parent_id', 0),
             'displayhomepage' => $request->boolean('displayhomepage'),
         ]);
 
@@ -36,7 +36,7 @@ class AdminCategoryController extends Controller
     public function edit(int $id)
     {
         $category = Category::findOrFail($id);
-        $parents  = Category::root()->where('id', '!=', $id)->get();
+        $parents = Category::root()->where('id', '!=', $id)->get();
 
         return view('admin.categories.form', compact('category', 'parents'));
     }
@@ -44,8 +44,8 @@ class AdminCategoryController extends Controller
     public function update(CategoryRequest $request, int $id)
     {
         Category::findOrFail($id)->update([
-            'name'            => $request->name,
-            'parent_id'       => $request->integer('parent_id', 0),
+            'name' => $request->name,
+            'parent_id' => $request->integer('parent_id', 0),
             'displayhomepage' => $request->boolean('displayhomepage'),
         ]);
 

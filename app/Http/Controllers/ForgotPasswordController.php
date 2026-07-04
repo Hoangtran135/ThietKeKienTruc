@@ -38,16 +38,15 @@ class ForgotPasswordController extends Controller
     public function reset(Request $request)
     {
         $request->validate([
-            'token'    => 'required',
-            'email'    => 'required|email',
+            'token' => 'required',
+            'email' => 'required|email',
             'password' => 'required|min:6|confirmed',
         ]);
 
         $status = Password::broker('customers')->reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($customer, $password) {
-                // Customer model casts 'password' => 'hashed', so assigning the
-                // plain value here lets Eloquent hash it automatically.
+
                 $customer->forceFill([
                     'password' => $password,
                     'remember_token' => Str::random(60),

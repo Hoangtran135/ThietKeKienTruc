@@ -16,6 +16,6 @@ class ImageUploadService
 
     public function delete(string $folder, string $filename): void
     {
-        Storage::disk('uploads')->delete($folder . '/' . $filename);
+        Storage::disk('uploads')->delete($folder.'/'.$filename);
     }
 }

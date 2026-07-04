@@ -7,10 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    const STATUS_PENDING   = 0;
+    const STATUS_PENDING = 0;
+
     const STATUS_CONFIRMED = 1;
-    const STATUS_SHIPPING  = 2;
+
+    const STATUS_SHIPPING = 2;
+
     const STATUS_DELIVERED = 3;
+
     const STATUS_CANCELLED = 4;
 
     protected $fillable = [
@@ -19,9 +23,9 @@ class Order extends Model
     ];
 
     protected $casts = [
-        'status'          => 'integer',
-        'payment_status'  => 'integer',
-        'shipping_fee'    => 'integer',
+        'status' => 'integer',
+        'payment_status' => 'integer',
+        'shipping_fee' => 'integer',
         'discount_amount' => 'integer',
     ];
 
@@ -37,23 +41,23 @@ class Order extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             self::STATUS_CONFIRMED => 'Đã xác nhận',
-            self::STATUS_SHIPPING  => 'Đang giao hàng',
+            self::STATUS_SHIPPING => 'Đang giao hàng',
             self::STATUS_DELIVERED => 'Đã giao hàng',
             self::STATUS_CANCELLED => 'Đã huỷ',
-            default                => 'Chờ xử lý',
+            default => 'Chờ xử lý',
         };
     }
 
     public function getStatusColorAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             self::STATUS_CONFIRMED => 'info',
-            self::STATUS_SHIPPING  => 'warning',
+            self::STATUS_SHIPPING => 'warning',
             self::STATUS_DELIVERED => 'success',
             self::STATUS_CANCELLED => 'danger',
-            default                => 'default',
+            default => 'default',
         };
     }
 
@@ -64,7 +68,7 @@ class Order extends Model
 
     public function getSubtotalAttribute(): float
     {
-        return $this->details->sum(fn($d) => $d->price * $d->number);
+        return $this->details->sum(fn ($d) => $d->price * $d->number);
     }
 
     public function getTotalAttribute(): float
@@ -86,8 +90,8 @@ class Order extends Model
     {
         return match ($this->shipping_method) {
             'express' => 'Giao hàng hỏa tốc',
-            'free'    => 'Miễn phí vận chuyển',
-            default   => 'Giao hàng tiêu chuẩn',
+            'free' => 'Miễn phí vận chuyển',
+            default => 'Giao hàng tiêu chuẩn',
         };
     }
 }

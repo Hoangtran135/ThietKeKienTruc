@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\AdminAuthenticate;
+use App\Http\Middleware\CustomerAuthenticate;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -12,10 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'admin.auth'    => \App\Http\Middleware\AdminAuthenticate::class,
-            'customer.auth' => \App\Http\Middleware\CustomerAuthenticate::class,
+            'admin.auth' => AdminAuthenticate::class,
+            'customer.auth' => CustomerAuthenticate::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        //
-    })->create();
+    ->withExceptions(function (Exceptions $exceptions): void {})->create();

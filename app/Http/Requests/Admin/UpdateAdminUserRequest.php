@@ -14,7 +14,7 @@ class UpdateAdminUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'     => 'required|string|max:500',
+            'name' => 'required|string|max:500',
             'password' => 'nullable|min:6|confirmed',
         ];
     }

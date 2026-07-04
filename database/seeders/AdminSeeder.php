@@ -13,7 +13,7 @@ class AdminSeeder extends Seeder
         Admin::firstOrCreate(
             ['email' => 'admin@mediamart.vn'],
             [
-                'name'     => 'Super Admin',
+                'name' => 'Super Admin',
                 'password' => Hash::make('admin123'),
             ]
         );

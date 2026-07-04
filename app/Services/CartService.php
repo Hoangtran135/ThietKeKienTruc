@@ -7,15 +7,6 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
-/**
- * Singleton Pattern: đảm bảo chỉ tồn tại một instance CartService
- * trong suốt vòng đời request, tránh khởi tạo lại giỏ hàng nhiều lần.
- *
- * Khách vãng lai: giỏ hàng lưu trong session.
- * Khách đã đăng nhập: giỏ hàng lưu trong bảng cart_items (DB) để giữ
- * được giỏ hàng khi đổi trình duyệt/thiết bị. mergeSessionCartIntoDb()
- * được gọi ngay sau khi đăng nhập để không mất giỏ hàng đang thao tác.
- */
 class CartService
 {
     private static ?CartService $instance = null;
@@ -25,7 +16,7 @@ class CartService
     public static function getInstance(): self
     {
         if (self::$instance === null) {
-            self::$instance = new self();
+            self::$instance = new self;
         }
 
         return self::$instance;
@@ -40,22 +31,22 @@ class CartService
     {
         $customerId = $this->customerId();
 
-        if (!$customerId) {
+        if (! $customerId) {
             return Session::get('cart', []);
         }
 
         $cart = [];
 
         foreach (CartItem::with('product')->where('customer_id', $customerId)->get() as $row) {
-            if (!$row->product) {
+            if (! $row->product) {
                 continue;
             }
 
             $cart[$row->product_id] = [
-                'id'     => $row->product->id,
-                'name'   => $row->product->name,
-                'photo'  => $row->product->photo,
-                'price'  => $row->product->final_price,
+                'id' => $row->product->id,
+                'name' => $row->product->name,
+                'photo' => $row->product->photo,
+                'price' => $row->product->final_price,
                 'number' => $row->number,
             ];
         }
@@ -92,10 +83,10 @@ class CartService
             $cart[$productId]['number']++;
         } else {
             $cart[$productId] = [
-                'id'     => $product->id,
-                'name'   => $product->name,
-                'photo'  => $product->photo,
-                'price'  => $product->final_price,
+                'id' => $product->id,
+                'name' => $product->name,
+                'photo' => $product->photo,
+                'price' => $product->final_price,
                 'number' => 1,
             ];
         }
@@ -103,10 +94,6 @@ class CartService
         Session::put('cart', $cart);
     }
 
-    /**
-     * Kiểm tra tồn kho trước khi cho phép đặt hàng.
-     * @return string[] danh sách lỗi (rỗng nếu hợp lệ)
-     */
     public function validateStock(): array
     {
         $errors = [];
@@ -114,8 +101,9 @@ class CartService
         foreach ($this->get() as $item) {
             $product = Product::find($item['id']);
 
-            if (!$product) {
+            if (! $product) {
                 $errors[] = "Sản phẩm \"{$item['name']}\" không còn tồn tại.";
+
                 continue;
             }
 
@@ -141,6 +129,7 @@ class CartService
                 } else {
                     CartItem::where('customer_id', $customerId)->where('product_id', $id)->update(['number' => $qty]);
                 }
+
                 continue;
             }
 
@@ -151,7 +140,7 @@ class CartService
             }
         }
 
-        if (!$customerId) {
+        if (! $customerId) {
             Session::put('cart', $cart);
         }
     }
@@ -162,6 +151,7 @@ class CartService
 
         if ($customerId) {
             CartItem::where('customer_id', $customerId)->where('product_id', $productId)->delete();
+
             return;
         }
 
@@ -176,6 +166,7 @@ class CartService
 
         if ($customerId) {
             CartItem::where('customer_id', $customerId)->delete();
+
             return;
         }
 
@@ -184,13 +175,9 @@ class CartService
 
     public function total(): float
     {
-        return array_sum(array_map(fn($i) => $i['price'] * $i['number'], $this->get()));
+        return array_sum(array_map(fn ($i) => $i['price'] * $i['number'], $this->get()));
     }
 
-    /**
-     * Gộp giỏ hàng session (khách vãng lai) vào giỏ hàng DB ngay sau khi
-     * đăng nhập, để không mất sản phẩm đã thêm trước khi login.
-     */
     public function mergeSessionCartIntoDb(int $customerId): void
     {
         $sessionCart = Session::get('cart', []);
@@ -202,7 +189,7 @@ class CartService
         foreach ($sessionCart as $productId => $item) {
             $product = Product::find($productId);
 
-            if (!$product) {
+            if (! $product) {
                 continue;
             }
 

@@ -30,8 +30,8 @@ class AdminProductController extends Controller
 
     public function store(ProductRequest $request)
     {
-        $data             = $request->validated();
-        $data['hot']      = $request->boolean('hot');
+        $data = $request->validated();
+        $data['hot'] = $request->boolean('hot');
         $data['discount'] = $data['discount'] ?? 0;
 
         if ($request->hasFile('photo')) {
@@ -45,7 +45,7 @@ class AdminProductController extends Controller
 
     public function edit(int $id)
     {
-        $product    = $this->productRepo->findWithRelations($id);
+        $product = $this->productRepo->findWithRelations($id);
         $categories = $this->productRepo->categoriesForForm();
 
         return view('admin.products.form', compact('product', 'categories'));
@@ -53,9 +53,9 @@ class AdminProductController extends Controller
 
     public function update(ProductRequest $request, int $id)
     {
-        $product          = $this->productRepo->findWithRelations($id);
-        $data             = $request->validated();
-        $data['hot']      = $request->boolean('hot');
+        $product = $this->productRepo->findWithRelations($id);
+        $data = $request->validated();
+        $data['hot'] = $request->boolean('hot');
         $data['discount'] = $data['discount'] ?? 0;
 
         if ($request->hasFile('photo')) {
@@ -72,7 +72,7 @@ class AdminProductController extends Controller
 
     public function destroy(int $id)
     {
-        // Observer tự xóa ảnh khi deleting
+
         $this->productRepo->delete($this->productRepo->findWithRelations($id));
 
         return redirect()->route('admin.products.index')->with('success', 'Đã xóa sản phẩm!');

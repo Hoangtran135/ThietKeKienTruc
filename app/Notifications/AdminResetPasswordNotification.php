@@ -27,7 +27,7 @@ class AdminResetPasswordNotification extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('Yêu cầu đặt lại mật khẩu Admin - MediaMart')
-            ->greeting('Xin chào ' . $notifiable->name . ',')
+            ->greeting('Xin chào '.$notifiable->name.',')
             ->line('Bạn vừa yêu cầu đặt lại mật khẩu cho tài khoản quản trị MediaMart.')
             ->action('Đặt lại mật khẩu', $url)
             ->line('Liên kết này sẽ hết hạn sau 60 phút.')

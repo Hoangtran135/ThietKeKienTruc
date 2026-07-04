@@ -17,9 +17,9 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $categoryId = $request->integer('category_id') ?: null;
-        $order      = $request->get('order', 'newest');
-        $fromPrice  = $request->filled('from_price') ? (float) $request->get('from_price') : null;
-        $toPrice    = $request->filled('to_price') ? (float) $request->get('to_price') : null;
+        $order = $request->get('order', 'newest');
+        $fromPrice = $request->filled('from_price') ? (float) $request->get('from_price') : null;
+        $toPrice = $request->filled('to_price') ? (float) $request->get('to_price') : null;
 
         $products = $this->productService->listByCategory($categoryId, $order, $fromPrice, $toPrice);
         $category = $categoryId ? Category::find($categoryId) : null;
@@ -29,21 +29,21 @@ class ProductController extends Controller
 
     public function detail(int $id)
     {
-        $product   = Product::with(['ratings.customer', 'category'])->findOrFail($id);
+        $product = Product::with(['ratings.customer', 'category'])->findOrFail($id);
         $avgRating = $product->ratings->avg('star') ?? 0;
-        $related   = Product::where('category_id', $product->category_id)
-                             ->where('id', '!=', $id)
-                             ->latest()
-                             ->take(6)
-                             ->get();
+        $related = Product::where('category_id', $product->category_id)
+            ->where('id', '!=', $id)
+            ->latest()
+            ->take(6)
+            ->get();
 
-        $customer      = Auth::guard('customer')->user();
-        $canRate       = false;
-        $alreadyRated  = false;
+        $customer = Auth::guard('customer')->user();
+        $canRate = false;
+        $alreadyRated = false;
 
         if ($customer) {
             $alreadyRated = $customer->hasRated($id);
-            $canRate      = !$alreadyRated && $customer->hasPurchased($id);
+            $canRate = ! $alreadyRated && $customer->hasPurchased($id);
         }
 
         return view('frontend.products.detail', compact('product', 'avgRating', 'related', 'canRate', 'alreadyRated'));
@@ -53,7 +53,7 @@ class ProductController extends Controller
     {
         $customer = Auth::guard('customer')->user();
 
-        if (!$customer) {
+        if (! $customer) {
             return back()->with('error', 'Vui lòng đăng nhập để đánh giá.');
         }
 
@@ -61,15 +61,15 @@ class ProductController extends Controller
             return back()->with('error', 'Bạn đã đánh giá sản phẩm này rồi.');
         }
 
-        if (!$customer->hasPurchased($id)) {
+        if (! $customer->hasPurchased($id)) {
             return back()->with('error', 'Bạn cần mua sản phẩm này trước khi đánh giá.');
         }
 
         Rating::create([
-            'product_id'  => $id,
+            'product_id' => $id,
             'customer_id' => $customer->id,
-            'star'        => $request->star,
-            'review'      => $request->review,
+            'star' => $request->star,
+            'review' => $request->review,
         ]);
 
         return back()->with('success', 'Cảm ơn bạn đã đánh giá!');

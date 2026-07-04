@@ -10,7 +10,7 @@ class CustomerAuthenticate
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::guard('customer')->check()) {
+        if (! Auth::guard('customer')->check()) {
             return redirect()->route('account.login')->with('error', 'Vui lòng đăng nhập để tiếp tục.');
         }
 

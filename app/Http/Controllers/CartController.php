@@ -13,7 +13,7 @@ class CartController extends Controller
 {
     public function __construct()
     {
-        // Singleton: lấy instance duy nhất thay vì inject mới
+
         $this->cartService = CartService::getInstance();
     }
 
@@ -21,14 +21,14 @@ class CartController extends Controller
 
     public function index()
     {
-        $cart  = $this->cartService->get();
+        $cart = $this->cartService->get();
         $total = $this->cartService->total();
 
         $shippingOptions = array_map(
             fn ($strategy) => [
-                'code'  => $strategy->code(),
+                'code' => $strategy->code(),
                 'label' => $strategy->label(),
-                'fee'   => $strategy->calculate((int) $total),
+                'fee' => $strategy->calculate((int) $total),
             ],
             ShippingFeeCalculator::all(),
         );
@@ -45,8 +45,8 @@ class CartController extends Controller
 
         if ($request->expectsJson()) {
             return response()->json([
-                'success'    => true,
-                'message'    => "Đã thêm \"{$product->name}\" vào giỏ hàng!",
+                'success' => true,
+                'message' => "Đã thêm \"{$product->name}\" vào giỏ hàng!",
                 'cart_count' => $cartCount,
             ]);
         }
@@ -68,6 +68,23 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', 'Đã xóa sản phẩm!');
     }
 
+    public function preview(Request $request)
+    {
+        $cart = $this->cartService->get();
+
+        if (empty($cart)) {
+            return response()->json(['success' => false, 'message' => 'Giỏ hàng trống.'], 422);
+        }
+
+        $pricing = CheckoutFacade::preview(
+            cart: $cart,
+            shippingMethodCode: $request->input('shipping_method', 'standard'),
+            voucherCode: $request->input('voucher_code'),
+        );
+
+        return response()->json(array_merge(['success' => true], $pricing));
+    }
+
     public function checkout(Request $request)
     {
         $cart = $this->cartService->get();
@@ -78,7 +95,7 @@ class CartController extends Controller
 
         $stockErrors = $this->cartService->validateStock();
 
-        if (!empty($stockErrors)) {
+        if (! empty($stockErrors)) {
             return redirect()->route('cart.index')->with('error', implode(' ', $stockErrors));
         }
 

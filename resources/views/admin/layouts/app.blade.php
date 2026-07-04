@@ -27,7 +27,6 @@
 <body>
 <div class="row" style="margin:0;">
 
-    {{-- Sidebar --}}
     <div class="col-md-2 col-sm-3 sidebar" style="padding:0;">
         <a href="{{ route('admin.dashboard') }}" class="brand">Media<span>Mart</span><br><small style="font-size:11px;opacity:.6;">Admin Panel</small></a>
         <ul>
@@ -63,7 +62,6 @@
         </ul>
     </div>
 
-    {{-- Main --}}
     <div class="col-md-10 col-sm-9" style="padding:0;">
         <div class="topbar">
             <strong>@yield('title', 'Dashboard')</strong>

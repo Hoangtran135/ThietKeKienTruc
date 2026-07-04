@@ -14,15 +14,15 @@ class ProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'        => 'required|string|max:500',
+            'name' => 'required|string|max:500',
             'description' => 'nullable|string',
-            'content'     => 'nullable|string',
-            'price'       => 'required|numeric|min:0',
-            'discount'    => 'nullable|integer|min:0|max:100',
+            'content' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'discount' => 'nullable|integer|min:0|max:100',
             'category_id' => 'required|exists:categories,id',
-            'hot'         => 'nullable|boolean',
-            'photo'       => 'nullable|image|max:5120',
-            'stock'       => 'required|integer|min:0',
+            'hot' => 'nullable|boolean',
+            'photo' => 'nullable|image|max:5120',
+            'stock' => 'required|integer|min:0',
         ];
     }
 }

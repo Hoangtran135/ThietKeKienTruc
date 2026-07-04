@@ -3,7 +3,6 @@
 
 @section('content')
 
-{{-- Page Title --}}
 <div class="page-title-bar">
     <h1><i class="fa fa-building" style="color:var(--red);margin-right:8px;"></i>Giới thiệu về MediaMart</h1>
     <span class="bc ms-auto">
@@ -13,7 +12,6 @@
     </span>
 </div>
 
-{{-- Hero Banner --}}
 <div class="about-hero">
     <div class="about-hero-content">
         <div class="about-hero-badge"><i class="fa fa-award me-2"></i>Thương hiệu uy tín hàng đầu</div>
@@ -30,7 +28,6 @@
     </div>
 </div>
 
-{{-- Stats --}}
 <div class="about-stats">
     <div class="about-stat-item">
         <div class="about-stat-number">10+</div>
@@ -50,7 +47,6 @@
     </div>
 </div>
 
-{{-- Story --}}
 <div class="row g-4 mt-2">
     <div class="col-md-6">
         <div class="about-card h-100">
@@ -70,7 +66,6 @@
     </div>
 </div>
 
-{{-- Core Values --}}
 <div class="mt-4">
     <h3 class="about-section-title"><i class="fa fa-star me-2" style="color:var(--red);"></i>Giá trị cốt lõi</h3>
     <div class="row g-3">
@@ -105,7 +100,6 @@
     </div>
 </div>
 
-{{-- Why Choose Us --}}
 <div class="about-why mt-4">
     <h3 class="about-section-title"><i class="fa fa-thumbs-up me-2" style="color:var(--red);"></i>Tại sao chọn MediaMart?</h3>
     <div class="row g-3">
@@ -148,7 +142,6 @@
     </div>
 </div>
 
-{{-- Team --}}
 <div class="mt-4">
     <h3 class="about-section-title"><i class="fa fa-users me-2" style="color:var(--red);"></i>Ban lãnh đạo</h3>
     <div class="row g-3">
@@ -183,7 +176,6 @@
     </div>
 </div>
 
-{{-- CTA --}}
 <div class="about-cta">
     <h3>Sẵn sàng trải nghiệm mua sắm cùng MediaMart?</h3>
     <p>Khám phá hàng nghìn sản phẩm công nghệ chính hãng với giá tốt nhất thị trường.</p>

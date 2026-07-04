@@ -2,11 +2,6 @@
 
 namespace App\Services\Shipping;
 
-/**
- * Adapter Pattern: GhnShippingAdapter và GhtkShippingAdapter "bọc"
- * các API/SDK có interface khác nhau (GHN trả mảng, GHTK trả float)
- * thành một interface chung ShippingProvider::getFee().
- */
 interface ShippingProvider
 {
     public function getName(): string;
@@ -39,7 +34,7 @@ class GhtkApiSdk
 
 class GhnShippingAdapter implements ShippingProvider
 {
-    public function __construct(private GhnApiClient $client = new GhnApiClient()) {}
+    public function __construct(private GhnApiClient $client = new GhnApiClient) {}
 
     public function getName(): string
     {
@@ -56,7 +51,7 @@ class GhnShippingAdapter implements ShippingProvider
 
 class GhtkShippingAdapter implements ShippingProvider
 {
-    public function __construct(private GhtkApiSdk $client = new GhtkApiSdk()) {}
+    public function __construct(private GhtkApiSdk $client = new GhtkApiSdk) {}
 
     public function getName(): string
     {

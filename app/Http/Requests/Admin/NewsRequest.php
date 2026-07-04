@@ -14,11 +14,11 @@ class NewsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'        => 'required|string|max:500',
+            'name' => 'required|string|max:500',
             'description' => 'nullable|string',
-            'content'     => 'nullable|string',
-            'hot'         => 'nullable|boolean',
-            'photo'       => 'nullable|image|max:5120',
+            'content' => 'nullable|string',
+            'hot' => 'nullable|boolean',
+            'photo' => 'nullable|image|max:5120',
         ];
     }
 }

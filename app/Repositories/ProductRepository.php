@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductRepository
@@ -18,7 +19,7 @@ class ProductRepository
         return Product::with(['ratings', 'category'])->findOrFail($id);
     }
 
-    public function categoriesForForm(): \Illuminate\Database\Eloquent\Collection
+    public function categoriesForForm(): Collection
     {
         return Category::root()->with('children')->get();
     }
