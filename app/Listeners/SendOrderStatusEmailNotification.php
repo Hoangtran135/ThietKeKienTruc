@@ -8,9 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 
-/**
- * Observer: gửi email thông báo khi trạng thái đơn hàng thay đổi.
- */
+
 class SendOrderStatusEmailNotification
 {
     public function handle(OrderStatusChanged $event): void
@@ -24,8 +22,9 @@ class SendOrderStatusEmailNotification
 
         try {
             Mail::to($customer->email)->send(new OrderStatusChangedMail($order));
-            Log::info("[Email] Đã gửi cập nhật trạng thái đơn #{$order->id} tới {$customer->email}");
-        } catch (\Exception $e) {
+            Log::info("[Email] Đã gửi cập nhật trạng thái đơn hàng #{$order->id} tới {$customer->email}");
+        } catch (\Exception $e)
+         {
             Log::error("[Email] Lỗi gửi email cập nhật đơn #{$order->id}: " . $e->getMessage());
         }
     }
