@@ -13,15 +13,19 @@ class OrderStatusChangedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    // Nhận thông tin đơn hàng cần gửi email
     public function __construct(public Order $order) {}
 
+    // Thiết lập tiêu đề email
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'MediaMart - Đơn hàng #' . $this->order->id . ' đã cập nhật: ' . $this->order->status_label,
+            subject: 'MediaMart - Đơn hàng #' . $this->order->id .
+                     ' đã cập nhật: ' . $this->order->status_label,
         );
     }
 
+    // Xác định giao diện và dữ liệu của email
     public function content(): Content
     {
         return new Content(
@@ -30,6 +34,7 @@ class OrderStatusChangedMail extends Mailable
         );
     }
 
+    // Không sử dụng tệp đính kèm
     public function attachments(): array
     {
         return [];
