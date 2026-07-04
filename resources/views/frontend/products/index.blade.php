@@ -11,7 +11,6 @@
     </span>
 </div>
 
-{{-- Sort bar --}}
 <div class="sort-bar">
     <span class="sort-label">Sắp xếp:</span>
     <a href="{{ request()->fullUrlWithQuery(['order' => 'newest']) }}"
@@ -24,7 +23,6 @@
        class="btn-sort {{ $order === 'nameAsc' ? 'active' : '' }}">A → Z</a>
 </div>
 
-{{-- Price filter --}}
 <form method="GET" action="{{ url()->current() }}" class="price-filter-bar">
     @if($categoryId)
         <input type="hidden" name="category_id" value="{{ $categoryId }}">

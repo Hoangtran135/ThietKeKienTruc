@@ -20,7 +20,7 @@ class PaymentController extends Controller
 
         $paymentMethod = PaymentMethodFactory::make($order->payment_method);
 
-        if (!$paymentMethod->requiresQrPayment()) {
+        if (! $paymentMethod->requiresQrPayment()) {
             return redirect()->route('home');
         }
 

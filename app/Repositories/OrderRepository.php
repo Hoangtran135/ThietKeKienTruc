@@ -10,7 +10,7 @@ class OrderRepository
     public function allWithCustomer(?int $status = null, int $perPage = 25): LengthAwarePaginator
     {
         return Order::with('customer')
-            ->when($status !== null, fn($q) => $q->where('status', $status))
+            ->when($status !== null, fn ($q) => $q->where('status', $status))
             ->latest()
             ->paginate($perPage);
     }

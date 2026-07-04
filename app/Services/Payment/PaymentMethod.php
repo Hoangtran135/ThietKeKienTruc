@@ -5,11 +5,6 @@ namespace App\Services\Payment;
 use App\Models\Order;
 use InvalidArgumentException;
 
-/**
- * Factory Method Pattern: định nghĩa interface PaymentMethod và factory
- * PaymentMethodFactory để tạo đối tượng thanh toán (COD/VNPay/Momo)
- * mà không cần client biết class cụ thể nào được khởi tạo.
- */
 interface PaymentMethod
 {
     public function code(): string;
@@ -39,7 +34,7 @@ abstract class AbstractQrPaymentMethod implements PaymentMethod
             number_format($order->total, 0, '', '')
         );
 
-        return 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=' . urlencode($content);
+        return 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&data='.urlencode($content);
     }
 }
 
@@ -112,9 +107,9 @@ class PaymentMethodFactory
     public static function make(string $code): PaymentMethod
     {
         return match ($code) {
-            'cod'   => new CodPaymentMethod(),
-            'vnpay' => new VnPayPaymentMethod(),
-            'momo'  => new MomoPaymentMethod(),
+            'cod' => new CodPaymentMethod,
+            'vnpay' => new VnPayPaymentMethod,
+            'momo' => new MomoPaymentMethod,
             default => throw new InvalidArgumentException("Phương thức thanh toán không hợp lệ: {$code}"),
         };
     }

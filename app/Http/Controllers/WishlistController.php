@@ -10,7 +10,7 @@ class WishlistController extends Controller
 
     public function __construct()
     {
-        // Singleton: lấy instance duy nhất thay vì inject mới
+
         $this->wishlistService = WishlistService::getInstance();
     }
 

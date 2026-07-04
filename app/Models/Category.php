@@ -23,13 +23,11 @@ class Category extends Model
         return $this->hasMany(Product::class);
     }
 
-    // Danh mục cấp 1 (không có cha)
     public function scopeRoot($query)
     {
         return $query->where('parent_id', 0);
     }
 
-    // Danh mục hiển thị trang chủ
     public function scopeHomepage($query)
     {
         return $query->where('displayhomepage', 1);

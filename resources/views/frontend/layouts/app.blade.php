@@ -13,23 +13,20 @@
 </head>
 <body>
 
-{{-- ==================== HEADER ==================== --}}
 <div id="mm-header">
     <div class="container">
         <div class="header-inner">
-            {{-- Logo --}}
+
             <a href="{{ route('home') }}" class="logo d-flex align-items-center gap-2 text-decoration-none">
                 <span style="background:var(--red);color:#fff;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;">M</span>
                 <span>MediaMart</span>
             </a>
 
-            {{-- Search --}}
             <form action="{{ route('search') }}" method="GET" class="mm-search">
                 <input type="text" name="keyword" placeholder="Tìm kiếm sản phẩm, thương hiệu..." value="{{ request('keyword') }}">
                 <button type="submit"><i class="fa fa-search"></i></button>
             </form>
 
-            {{-- Actions --}}
             <div class="mm-header-actions">
                 @auth('customer')
                     <span class="d-none d-md-flex align-items-center gap-1" style="font-size:13px;color:var(--gray-700);">
@@ -76,7 +73,6 @@
         </div>
     </div>
 
-    {{-- Navbar --}}
     <nav id="mm-navbar">
         <div class="container">
             <div class="nav-inner">
@@ -129,17 +125,12 @@
     </nav>
 </div>
 
-{{-- Flash messages: hiển thị qua toast (góc phải trên) thay vì banner inline,
-     tránh hiện trùng 2 thông báo cho cùng một session flash. --}}
-
-{{-- Main content --}}
 <div id="mm-content">
     <div class="container">
         @yield('content')
     </div>
 </div>
 
-{{-- Footer --}}
 <footer id="mm-footer">
     <div class="container">
         <div class="row g-4">
@@ -188,7 +179,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-{{-- Toast container --}}
 <div id="mm-toast-container" style="position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;"></div>
 
 <style>

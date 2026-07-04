@@ -18,7 +18,7 @@ class OrderConfirmationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'MediaMart - Xác nhận đơn hàng #' . $this->order->id,
+            subject: 'MediaMart - Xác nhận đơn hàng #'.$this->order->id,
         );
     }
 

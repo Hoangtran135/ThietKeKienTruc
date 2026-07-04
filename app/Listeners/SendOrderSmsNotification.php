@@ -5,14 +5,11 @@ namespace App\Listeners;
 use App\Events\OrderPlaced;
 use Illuminate\Support\Facades\Log;
 
-/**
- * Observer: gửi SMS xác nhận đơn hàng (demo - ghi log thay vì gửi SMS thật).
- */
 class SendOrderSmsNotification
 {
     public function handle(OrderPlaced $event): void
     {
-        $order    = $event->order;
+        $order = $event->order;
         $customer = $order->customer;
 
         Log::info("[SMS] Gửi SMS xác nhận đơn hàng #{$order->id} tới số {$customer?->phone}", [

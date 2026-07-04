@@ -25,7 +25,7 @@ class AdminNewsController extends Controller
 
     public function store(NewsRequest $request)
     {
-        $data        = $request->validated();
+        $data = $request->validated();
         $data['hot'] = $request->boolean('hot');
 
         if ($request->hasFile('photo')) {
@@ -46,8 +46,8 @@ class AdminNewsController extends Controller
 
     public function update(NewsRequest $request, int $id)
     {
-        $article     = NewsArticle::findOrFail($id);
-        $data        = $request->validated();
+        $article = NewsArticle::findOrFail($id);
+        $data = $request->validated();
         $data['hot'] = $request->boolean('hot');
 
         if ($request->hasFile('photo')) {
@@ -64,7 +64,7 @@ class AdminNewsController extends Controller
 
     public function destroy(int $id)
     {
-        // Observer tự xóa ảnh khi deleting
+
         NewsArticle::findOrFail($id)->delete();
 
         return redirect()->route('admin.news.index')->with('success', 'Đã xóa tin tức!');

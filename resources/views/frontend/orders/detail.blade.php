@@ -18,10 +18,8 @@
 
 <div class="row g-4">
 
-    {{-- Cột trái: thông tin đơn + khách --}}
     <div class="col-md-4">
 
-        {{-- Trạng thái --}}
         <div class="myorder-info-card mb-3">
             <h6 class="myorder-info-title"><i class="fa fa-info-circle me-2"></i>Thông tin đơn hàng</h6>
             <div class="myorder-info-row">
@@ -46,7 +44,6 @@
                 </span>
             </div>
 
-            {{-- Timeline trạng thái --}}
             @if($order->status != 4)
             <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
                 @php $steps = [0=>'Đặt hàng',1=>'Xác nhận',2=>'Đang giao',3=>'Đã nhận']; @endphp
@@ -73,7 +70,6 @@
             @endif
         </div>
 
-        {{-- Vận chuyển & Thanh toán --}}
         <div class="myorder-info-card mb-3">
             <h6 class="myorder-info-title"><i class="fa fa-truck me-2"></i>Vận chuyển & Thanh toán</h6>
             <div class="myorder-info-row">
@@ -92,7 +88,6 @@
             @endif
         </div>
 
-        {{-- Thông tin khách --}}
         <div class="myorder-info-card">
             <h6 class="myorder-info-title"><i class="fa fa-user me-2"></i>Thông tin giao hàng</h6>
             <div class="myorder-info-row">
@@ -115,7 +110,6 @@
 
     </div>
 
-    {{-- Cột phải: danh sách sản phẩm + tổng tiền --}}
     <div class="col-md-8">
         <div class="myorder-info-card">
             <h6 class="myorder-info-title"><i class="fa fa-shopping-cart me-2"></i>Sản phẩm đã đặt</h6>
@@ -145,7 +139,6 @@
             </div>
             @endforeach
 
-            {{-- Tổng kết --}}
             <div class="myorder-summary">
                 <div class="myorder-summary-row">
                     <span>Tạm tính</span>
@@ -174,7 +167,6 @@
             </div>
         </div>
 
-        {{-- Nút hành động --}}
         <div class="d-flex gap-3 mt-3 flex-wrap">
             <a href="{{ route('orders.index') }}" class="btn-myorder-back">
                 <i class="fa fa-arrow-left me-2"></i>Quay lại danh sách

@@ -18,7 +18,7 @@ class OrderStatusChangedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'MediaMart - Đơn hàng #' . $this->order->id . ' đã cập nhật: ' . $this->order->status_label,
+            subject: 'MediaMart - Đơn hàng #'.$this->order->id.' đã cập nhật: '.$this->order->status_label,
         );
     }
 

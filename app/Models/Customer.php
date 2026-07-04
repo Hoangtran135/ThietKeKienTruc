@@ -34,8 +34,8 @@ class Customer extends Authenticatable
     public function hasPurchased(int $productId): bool
     {
         return $this->orders()
-            ->whereIn('status', [1, 2, 3]) // confirmed, shipping, delivered
-            ->whereHas('details', fn($q) => $q->where('product_id', $productId))
+            ->whereIn('status', [1, 2, 3])
+            ->whereHas('details', fn ($q) => $q->where('product_id', $productId))
             ->exists();
     }
 

@@ -3,7 +3,6 @@
 
 @section('content')
 
-{{-- Page Title --}}
 <div class="page-title-bar">
     <h1><i class="fa fa-shield-halved" style="color:var(--red);margin-right:8px;"></i>Chính sách của MediaMart</h1>
     <span class="bc ms-auto">
@@ -14,7 +13,7 @@
 </div>
 
 <div class="row g-4">
-    {{-- Sidebar nav --}}
+
     <div class="col-md-3">
         <div class="policy-sidebar">
             <h6 class="policy-sidebar-title"><i class="fa fa-list me-2"></i>Danh mục chính sách</h6>
@@ -28,10 +27,8 @@
         </div>
     </div>
 
-    {{-- Content --}}
     <div class="col-md-9">
 
-        {{-- 1. Bảo hành --}}
         <div id="baohanh" class="policy-section">
             <div class="policy-section-header">
                 <div class="policy-header-icon"><i class="fa fa-shield-alt"></i></div>
@@ -69,7 +66,6 @@
             </div>
         </div>
 
-        {{-- 2. Đổi trả --}}
         <div id="doitra" class="policy-section">
             <div class="policy-section-header">
                 <div class="policy-header-icon" style="background:#e3f2fd;color:#1565c0;"><i class="fa fa-rotate-left"></i></div>
@@ -105,7 +101,6 @@
             </div>
         </div>
 
-        {{-- 3. Vận chuyển --}}
         <div id="vanchuyen" class="policy-section">
             <div class="policy-section-header">
                 <div class="policy-header-icon" style="background:#fff3e0;color:#e65100;"><i class="fa fa-truck"></i></div>
@@ -150,7 +145,6 @@
             </div>
         </div>
 
-        {{-- 4. Thanh toán --}}
         <div id="thanhtoan" class="policy-section">
             <div class="policy-section-header">
                 <div class="policy-header-icon" style="background:#f3e5f5;color:#6a1b9a;"><i class="fa fa-credit-card"></i></div>
@@ -192,7 +186,6 @@
             </div>
         </div>
 
-        {{-- 5. Bảo mật --}}
         <div id="baomat" class="policy-section">
             <div class="policy-section-header">
                 <div class="policy-header-icon" style="background:#e8f5e9;color:#2e7d32;"><i class="fa fa-lock"></i></div>

@@ -5,12 +5,6 @@ namespace App\Services\Order;
 use App\Models\Order;
 use App\Models\OrderDetail;
 
-/**
- * Builder Pattern: OrderBuilder dựng đơn hàng (Order + OrderDetail)
- * qua các bước fluent: forCustomer → withPaymentMethod → withShipping
- * → withVoucher → addItemsFromCart → build().
- * File được đặt tên OrderDirector.php (Director điều phối Builder).
- */
 class OrderBuilder
 {
     private ?int $customerId = null;
@@ -25,12 +19,11 @@ class OrderBuilder
 
     private int $discountAmount = 0;
 
-    /** @var array<int, array{id:int, number:int, price:float}> */
     private array $items = [];
 
     public static function new(): self
     {
-        return new self();
+        return new self;
     }
 
     public function forCustomer(?int $customerId): self
@@ -50,14 +43,14 @@ class OrderBuilder
     public function withShipping(string $shippingMethod, int $shippingFee): self
     {
         $this->shippingMethod = $shippingMethod;
-        $this->shippingFee    = $shippingFee;
+        $this->shippingFee = $shippingFee;
 
         return $this;
     }
 
     public function withVoucher(?string $voucherCode, int $discountAmount): self
     {
-        $this->voucherCode    = $voucherCode;
+        $this->voucherCode = $voucherCode;
         $this->discountAmount = $discountAmount;
 
         return $this;
@@ -70,7 +63,6 @@ class OrderBuilder
         return $this;
     }
 
-    /** @param array<int|string, array{id:int, number:int, price:float}> $cart */
     public function addItemsFromCart(array $cart): self
     {
         foreach ($cart as $item) {
@@ -83,22 +75,22 @@ class OrderBuilder
     public function build(): Order
     {
         $order = Order::create([
-            'customer_id'     => $this->customerId,
-            'status'          => 0,
-            'payment_method'  => $this->paymentMethod,
-            'payment_status'  => 0,
+            'customer_id' => $this->customerId,
+            'status' => 0,
+            'payment_method' => $this->paymentMethod,
+            'payment_status' => 0,
             'shipping_method' => $this->shippingMethod,
-            'shipping_fee'    => $this->shippingFee,
-            'voucher_code'    => $this->voucherCode,
+            'shipping_fee' => $this->shippingFee,
+            'voucher_code' => $this->voucherCode,
             'discount_amount' => $this->discountAmount,
         ]);
 
         foreach ($this->items as $item) {
             OrderDetail::create([
-                'order_id'   => $order->id,
+                'order_id' => $order->id,
                 'product_id' => $item['id'],
-                'number'     => $item['number'],
-                'price'      => $item['price'],
+                'number' => $item['number'],
+                'price' => $item['price'],
             ]);
         }
 

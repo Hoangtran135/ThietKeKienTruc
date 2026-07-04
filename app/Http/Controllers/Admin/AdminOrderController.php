@@ -18,7 +18,7 @@ class AdminOrderController extends Controller
     public function index(Request $request)
     {
         $status = $request->get('status', '');
-        $orders = $this->orderRepo->allWithCustomer($status !== '' ? (int)$status : null);
+        $orders = $this->orderRepo->allWithCustomer($status !== '' ? (int) $status : null);
 
         return view('admin.orders.index', compact('orders', 'status'));
     }
@@ -40,7 +40,7 @@ class AdminOrderController extends Controller
     public function updateStatus(Request $request, int $id)
     {
         $request->validate(['status' => 'required|integer|in:0,1,2,3,4']);
-        $this->orderService->updateStatus($id, (int)$request->status);
+        $this->orderService->updateStatus($id, (int) $request->status);
 
         return back()->with('success', 'Đã cập nhật trạng thái đơn hàng.');
     }
@@ -49,21 +49,21 @@ class AdminOrderController extends Controller
     {
         $orders = Order::with(['customer', 'details.product'])->latest()->get();
 
-        $filename = 'orders_' . now()->format('Ymd_His') . '.csv';
+        $filename = 'orders_'.now()->format('Ymd_His').'.csv';
 
         $headers = [
-            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Type' => 'text/csv; charset=UTF-8',
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ];
 
         $callback = function () use ($orders) {
             $file = fopen('php://output', 'w');
-            fputs($file, "\xEF\xBB\xBF"); // BOM UTF-8
+            fwrite($file, "\xEF\xBB\xBF");
             fputcsv($file, ['Mã ĐH', 'Khách hàng', 'Email', 'Trạng thái', 'Thanh toán', 'Tổng tiền', 'Ngày đặt']);
 
             foreach ($orders as $order) {
                 fputcsv($file, [
-                    '#' . $order->id,
+                    '#'.$order->id,
                     $order->customer->name ?? 'Khách vãng lai',
                     $order->customer->email ?? '',
                     $order->status_label,

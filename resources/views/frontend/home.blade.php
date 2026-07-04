@@ -3,7 +3,6 @@
 
 @section('content')
 
-{{-- Sản phẩm HOT --}}
 <div class="mm-section-title">
     <span><i class="fa fa-fire" style="color:var(--red);margin-right:6px;"></i>SẢN PHẨM HOT</span>
 </div>
@@ -13,12 +12,10 @@
     @endforeach
 </div>
 
-{{-- Banner --}}
 <div class="mm-banner">
     <img src="{{ asset('assets/frontend/images/adv1.jpg') }}" alt="Banner" onerror="this.style.display='none'">
 </div>
 
-{{-- Danh mục sản phẩm --}}
 @foreach($categories as $category)
     <div style="margin-top:36px;">
         <div class="mm-section-title">
@@ -35,7 +32,6 @@
     </div>
 @endforeach
 
-{{-- Tin tức --}}
 @if($hotNews->count())
     <div style="margin-top:40px;">
         <div class="mm-section-title">

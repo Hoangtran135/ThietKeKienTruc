@@ -9,10 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-/**
- * Facade Pattern: AccountController chỉ điều phối request/response,
- * mọi logic xác thực được ứy thác toàn bộ cho AuthFacade.
- */
 class AccountController extends Controller
 {
     public function loginForm()
@@ -59,6 +55,7 @@ class AccountController extends Controller
     public function profile()
     {
         $customer = Auth::guard('customer')->user();
+
         return view('frontend.account.profile', compact('customer'));
     }
 
@@ -67,8 +64,8 @@ class AccountController extends Controller
         $customer = Auth::guard('customer')->user();
 
         $request->validate([
-            'name'    => 'required|string|max:255',
-            'phone'   => 'nullable|string|max:20',
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
         ]);
 
@@ -83,10 +80,10 @@ class AccountController extends Controller
 
         $request->validate([
             'current_password' => 'required',
-            'password'         => 'required|min:6|confirmed',
+            'password' => 'required|min:6|confirmed',
         ]);
 
-        if (!Hash::check($request->current_password, $customer->password)) {
+        if (! Hash::check($request->current_password, $customer->password)) {
             return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng.']);
         }
 

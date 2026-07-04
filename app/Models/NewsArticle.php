@@ -15,7 +15,7 @@ class NewsArticle extends Model
     public function getPhotoUrlAttribute(): string
     {
         return $this->photo
-            ? asset('uploads/news/' . $this->photo)
+            ? asset('uploads/news/'.$this->photo)
             : asset('images/no-image.png');
     }
 

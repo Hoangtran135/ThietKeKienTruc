@@ -7,7 +7,7 @@
 </div>
 
 <div class="row g-4">
-    {{-- Contact info --}}
+
     <div class="col-md-5">
         <div class="contact-card">
             <h4 style="font-weight:700;margin-bottom:22px;">Thông tin liên hệ</h4>
@@ -50,7 +50,6 @@
         </div>
     </div>
 
-    {{-- Contact form --}}
     <div class="col-md-7">
         <div class="contact-card">
             <h4 style="font-weight:700;margin-bottom:22px;">Gửi tin nhắn cho chúng tôi</h4>

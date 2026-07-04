@@ -19,7 +19,6 @@
 
 <div class="row g-4">
 
-    {{-- Sidebar --}}
     <div class="col-md-3">
         <div class="myorder-info-card text-center" style="padding:20px;">
             <div style="width:72px;height:72px;border-radius:50%;background:var(--primary);color:#fff;font-size:28px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
@@ -36,10 +35,8 @@
         </div>
     </div>
 
-    {{-- Main --}}
     <div class="col-md-9">
 
-        {{-- Thông tin cá nhân --}}
         <div class="myorder-info-card mb-4">
             <h6 class="myorder-info-title"><i class="fa fa-edit me-2"></i>Thông tin cá nhân</h6>
             <form action="{{ route('account.profile.update') }}" method="POST" style="margin-top:12px;">
@@ -73,7 +70,6 @@
             </form>
         </div>
 
-        {{-- Đổi mật khẩu --}}
         <div class="myorder-info-card">
             <h6 class="myorder-info-title"><i class="fa fa-lock me-2"></i>Đổi mật khẩu</h6>
             <form action="{{ route('account.password.change') }}" method="POST" style="margin-top:12px;">

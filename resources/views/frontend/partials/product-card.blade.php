@@ -1,5 +1,5 @@
 <div class="product-card">
-    {{-- Image --}}
+
     <div class="card-img-wrap">
         @if($product->discount > 0)
             <span class="badge-discount">-{{ $product->discount }}%</span>
@@ -17,7 +17,6 @@
         </form>
     </div>
 
-    {{-- Body --}}
     <div class="card-body">
         <a href="{{ route('products.detail', $product->id) }}" class="product-name">{{ $product->name }}</a>
 

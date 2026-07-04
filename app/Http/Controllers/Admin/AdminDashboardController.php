@@ -13,14 +13,13 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
-        $totalProducts  = Product::count();
-        $totalOrders    = Order::count();
-        $pendingOrders  = Order::where('status', Order::STATUS_PENDING)->count();
+        $totalProducts = Product::count();
+        $totalOrders = Order::count();
+        $pendingOrders = Order::where('status', Order::STATUS_PENDING)->count();
         $totalCustomers = Customer::count();
-        $totalRevenue   = Order::where('status', Order::STATUS_DELIVERED)->get()->sum('total');
-        $recentOrders   = Order::with('customer')->latest()->take(10)->get();
+        $totalRevenue = Order::where('status', Order::STATUS_DELIVERED)->get()->sum('total');
+        $recentOrders = Order::with('customer')->latest()->take(10)->get();
 
-        // Doanh thu theo tháng (12 tháng gần nhất)
         $revenueByMonth = Order::where('status', Order::STATUS_DELIVERED)
             ->where('created_at', '>=', now()->subMonths(11)->startOfMonth())
             ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as month, SUM(shipping_fee - discount_amount) as extra")
@@ -29,11 +28,10 @@ class AdminDashboardController extends Controller
             ->get()
             ->keyBy('month');
 
-        // Tính tổng doanh thu mỗi tháng (subtotal từ order_details + shipping - discount)
         $revenueChartData = collect();
         for ($i = 11; $i >= 0; $i--) {
-            $month  = now()->subMonths($i)->format('Y-m');
-            $label  = now()->subMonths($i)->format('m/Y');
+            $month = now()->subMonths($i)->format('Y-m');
+            $label = now()->subMonths($i)->format('m/Y');
             $amount = Order::where('status', Order::STATUS_DELIVERED)
                 ->whereRaw("DATE_FORMAT(created_at, '%Y-%m') = ?", [$month])
                 ->get()
@@ -41,7 +39,6 @@ class AdminDashboardController extends Controller
             $revenueChartData->push(['label' => $label, 'amount' => $amount]);
         }
 
-        // Top 5 sản phẩm bán chạy
         $topProducts = OrderDetail::select('product_id', DB::raw('SUM(number) as total_sold'))
             ->with('product')
             ->groupBy('product_id')
@@ -49,7 +46,6 @@ class AdminDashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Thống kê theo trạng thái
         $statusStats = Order::selectRaw('status, COUNT(*) as count')
             ->groupBy('status')
             ->pluck('count', 'status');

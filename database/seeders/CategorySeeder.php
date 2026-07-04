@@ -24,7 +24,7 @@ class CategorySeeder extends Seeder
             );
         }
 
-        $phone  = Category::where('name', 'Điện thoại')->first();
+        $phone = Category::where('name', 'Điện thoại')->first();
         $laptop = Category::where('name', 'Laptop')->first();
         $phukien = Category::where('name', 'Phụ kiện')->first();
 

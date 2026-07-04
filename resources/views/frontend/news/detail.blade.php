@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="row g-4">
-    {{-- Article content --}}
+
     <div class="col-md-8">
         <div class="detail-content-box" style="padding:28px;">
             <p style="color:var(--gray-500);font-size:13px;margin-bottom:8px;">
@@ -19,7 +19,6 @@
         </div>
     </div>
 
-    {{-- Sidebar --}}
     <div class="col-md-4">
         <div style="background:#fff;border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);">
             <h5 style="font-weight:700;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--red);">

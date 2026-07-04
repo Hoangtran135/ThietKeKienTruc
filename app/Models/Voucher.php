@@ -12,31 +12,42 @@ class Voucher extends Model
     ];
 
     protected $casts = [
-        'is_active'  => 'boolean',
+        'is_active' => 'boolean',
         'expires_at' => 'date',
     ];
 
-    public function isValid(): bool
+    public function isValid(?int $subtotal = null): bool
     {
-        if (!$this->is_active) return false;
-        if ($this->expires_at && $this->expires_at->isPast()) return false;
-        if ($this->usage_limit && $this->used_count >= $this->usage_limit) return false;
+        if (! $this->is_active) {
+            return false;
+        }
+        if ($this->expires_at && $this->expires_at->isPast()) {
+            return false;
+        }
+        if ($this->usage_limit && $this->used_count >= $this->usage_limit) {
+            return false;
+        }
+        if ($subtotal !== null && $this->min_order > 0 && $subtotal < $this->min_order) {
+            return false;
+        }
+
         return true;
     }
 
     public function getTypeLabelAttribute(): string
     {
-        return match($this->type) {
-            'percent'  => "Giảm {$this->value}%",
-            'fixed'    => 'Giảm ' . number_format($this->value) . '₫',
+        return match ($this->type) {
+            'percent' => "Giảm {$this->value}%",
+            'fixed' => 'Giảm '.number_format($this->value).'₫',
             'freeship' => 'Miễn phí vận chuyển',
-            default    => $this->type,
+            default => $this->type,
         };
     }
 
-    public static function findValid(string $code): ?self
+    public static function findValid(string $code, ?int $subtotal = null): ?self
     {
         $voucher = self::where('code', strtoupper(trim($code)))->first();
-        return ($voucher && $voucher->isValid()) ? $voucher : null;
+
+        return ($voucher && $voucher->isValid($subtotal)) ? $voucher : null;
     }
 }

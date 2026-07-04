@@ -39,16 +39,15 @@ class AdminForgotPasswordController extends Controller
     public function reset(Request $request)
     {
         $request->validate([
-            'token'    => 'required',
-            'email'    => 'required|email',
+            'token' => 'required',
+            'email' => 'required|email',
             'password' => 'required|min:6|confirmed',
         ]);
 
         $status = Password::broker('admins')->reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($admin, $password) {
-                // Admin model casts 'password' => 'hashed', so assigning the
-                // plain value here lets Eloquent hash it automatically.
+
                 $admin->forceFill([
                     'password' => $password,
                     'remember_token' => Str::random(60),

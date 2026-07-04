@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Observers;
 
 use App\Models\NewsArticle;
@@ -11,7 +10,7 @@ class NewsArticleObserver
     public function deleting(NewsArticle $article): void
     {
         if ($article->photo) {
-            Storage::disk('uploads')->delete('news/' . $article->photo);
+            Storage::disk('uploads')->delete('news/'.$article->photo);
         }
     }
 }
