@@ -160,6 +160,127 @@ class CheckoutTest extends TestCase
         ]);
     }
 
+    public function test_percent_voucher_discount_is_capped_by_max_discount(): void
+    {
+        $customer = $this->makeCustomer();
+        // Sản phẩm giá cao để 20% vượt xa mức giảm tối đa
+        $product  = $this->makeProduct(['price' => 180405000, 'stock' => 5]);
+
+        Voucher::create([
+            'code' => 'SALE20',
+            'type' => 'percent',
+            'value' => 20,
+            'min_order' => 500000,
+            'max_discount' => 100000,
+            'usage_limit' => 2,
+            'used_count' => 0,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($customer, 'customer');
+        $this->post(route('cart.add', $product->id));
+
+        $this->post(route('cart.checkout'), [
+            'payment_method'  => 'cod',
+            'shipping_method' => 'standard',
+            'voucher_code'    => 'SALE20',
+        ]);
+
+        $order = Order::first();
+
+        $this->assertNotNull($order);
+        // 20% của 180.405.000 = 36.081.000, nhưng phải bị chặn ở max_discount = 100.000
+        $this->assertEquals(100000, $order->discount_amount);
+    }
+
+    public function test_voucher_rejected_when_order_below_min_order(): void
+    {
+        $customer = $this->makeCustomer();
+        $product  = $this->makeProduct(['price' => 100000, 'stock' => 5]);
+
+        Voucher::create([
+            'code' => 'SALE20',
+            'type' => 'percent',
+            'value' => 20,
+            'min_order' => 500000,
+            'max_discount' => 100000,
+            'usage_limit' => 2,
+            'used_count' => 0,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($customer, 'customer');
+        $this->post(route('cart.add', $product->id));
+
+        $this->post(route('cart.checkout'), [
+            'payment_method'  => 'cod',
+            'shipping_method' => 'standard',
+            'voucher_code'    => 'SALE20',
+        ]);
+
+        $order = Order::first();
+
+        $this->assertNotNull($order);
+        // Đơn 100.000đ < min_order 500.000đ -> voucher không được áp dụng
+        $this->assertEquals(0, $order->discount_amount);
+    }
+
+    public function test_cart_preview_shows_discount_without_creating_order(): void
+    {
+        $customer = $this->makeCustomer();
+        $product  = $this->makeProduct(['price' => 1000000, 'stock' => 5]);
+
+        Voucher::create([
+            'code' => 'SALE10',
+            'type' => 'percent',
+            'value' => 10,
+            'min_order' => 0,
+            'usage_limit' => 100,
+            'used_count' => 0,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($customer, 'customer');
+        $this->post(route('cart.add', $product->id));
+
+        $response = $this->postJson(route('cart.preview'), [
+            'shipping_method' => 'standard',
+            'voucher_code'    => 'SALE10',
+        ]);
+
+        $response->assertOk();
+        $response->assertJson([
+            'success'      => true,
+            'voucherValid' => true,
+            'subtotal'     => 1000000,
+            'discount'     => 100000,
+        ]);
+
+        // Không tạo đơn hàng thật, chỉ xem trước
+        $this->assertDatabaseCount('orders', 0);
+    }
+
+    public function test_cart_preview_reports_invalid_voucher(): void
+    {
+        $customer = $this->makeCustomer();
+        $product  = $this->makeProduct();
+
+        $this->actingAs($customer, 'customer');
+        $this->post(route('cart.add', $product->id));
+
+        $response = $this->postJson(route('cart.preview'), [
+            'shipping_method' => 'standard',
+            'voucher_code'    => 'MANOTONTAI',
+        ]);
+
+        $response->assertOk();
+        $response->assertJson([
+            'success'      => true,
+            'voucherValid' => false,
+            'discount'     => 0,
+        ]);
+    }
+
     public function test_cart_persists_across_requests_for_logged_in_customer(): void
     {
         $customer = $this->makeCustomer();

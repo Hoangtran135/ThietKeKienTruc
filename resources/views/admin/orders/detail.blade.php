@@ -38,7 +38,8 @@
                     <p><strong>Voucher:</strong> {{ $order->voucher_code }} (-{{ number_format($order->discount_amount) }}₫)</p>
                 @endif
                 @if($order->status < 4)
-                <form action="{{ route('admin.orders.status', $order->id) }}" method="POST" style="margin-top:8px;">
+                <form action="{{ route('admin.orders.status', $order->id) }}" method="POST" style="margin-top:8px;"
+                      onsubmit="this.querySelector('button').disabled=true;">
                     @csrf
                     @php $nextLabels = [1=>'Xác nhận đơn',2=>'Bắt đầu giao hàng',3=>'Xác nhận đã giao']; @endphp
                     @if(isset($nextLabels[$order->status + 1]))
@@ -50,7 +51,7 @@
                 </form>
                 @if($order->isCancellable())
                 <form action="{{ route('admin.orders.status', $order->id) }}" method="POST" style="margin-top:6px;"
-                      onsubmit="return confirm('Huỷ đơn hàng này?')">
+                      onsubmit="if(!confirm('Huỷ đơn hàng này?')) return false; this.querySelector('button').disabled=true;">
                     @csrf
                     <input type="hidden" name="status" value="4">
                     <button class="btn btn-danger btn-block">

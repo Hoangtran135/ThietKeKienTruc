@@ -51,12 +51,15 @@
                     </td>
                     <td>
                         <a href="{{ route('admin.orders.detail', $order->id) }}" class="btn btn-xs btn-info">Chi tiết</a>
-                        @if($order->status < 4)
-                        <form action="{{ route('admin.orders.status', $order->id) }}" method="POST" style="display:inline;">
+                        @if($order->status < \App\Models\Order::STATUS_DELIVERED)
+                        <form action="{{ route('admin.orders.status', $order->id) }}" method="POST" style="display:inline;"
+                              onsubmit="this.querySelector('button').disabled=true;">
                             @csrf
                             @php
                                 $nextStatus = $order->status + 1;
-                                $nextLabels = [1=>'Xác nhận',2=>'Giao hàng',3=>'Đã giao',4=>'Hoàn tất'];
+                                // STATUS_CANCELLED (4) không nằm trong luồng "tiến trạng thái" này,
+                                // chỉ dùng cho nút Huỷ riêng bên dưới.
+                                $nextLabels = [1=>'Xác nhận',2=>'Giao hàng',3=>'Đã giao'];
                             @endphp
                             <input type="hidden" name="status" value="{{ $nextStatus }}">
                             <button class="btn btn-xs btn-success">→ {{ $nextLabels[$nextStatus] ?? '' }}</button>
@@ -64,7 +67,7 @@
                         @endif
                         @if($order->isCancellable())
                         <form action="{{ route('admin.orders.status', $order->id) }}" method="POST" style="display:inline;"
-                              onsubmit="return confirm('Huỷ đơn hàng #{{ $order->id }}?')">
+                              onsubmit="if(!confirm('Huỷ đơn hàng #{{ $order->id }}?')) return false; this.querySelector('button').disabled=true;">
                             @csrf
                             <input type="hidden" name="status" value="4">
                             <button class="btn btn-xs btn-danger">Huỷ</button>

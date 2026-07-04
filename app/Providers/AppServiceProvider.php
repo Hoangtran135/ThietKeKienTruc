@@ -2,17 +2,11 @@
 
 namespace App\Providers;
 
-use App\Events\OrderPlaced;
-use App\Events\OrderStatusChanged;
-use App\Listeners\SendOrderEmailNotification;
-use App\Listeners\SendOrderSmsNotification;
-use App\Listeners\SendOrderStatusEmailNotification;
 use App\Models\NewsArticle;
 use App\Models\Product;
 use App\Observers\NewsArticleObserver;
 use App\Observers\ProductObserver;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -28,8 +22,10 @@ class AppServiceProvider extends ServiceProvider
         Product::observe(ProductObserver::class);
         NewsArticle::observe(NewsArticleObserver::class);
 
-        Event::listen(OrderPlaced::class, SendOrderEmailNotification::class);
-        Event::listen(OrderPlaced::class, SendOrderSmsNotification::class);
-        Event::listen(OrderStatusChanged::class, SendOrderStatusEmailNotification::class);
+        // Listeners trong app/Listeners (SendOrderEmailNotification,
+        // SendOrderSmsNotification, SendOrderStatusEmailNotification) được
+        // Laravel tự động phát hiện và đăng ký theo type-hint của handle(),
+        // không cần Event::listen() thủ công ở đây (tránh đăng ký trùng
+        // khiến email bị gửi 2 lần).
     }
 }

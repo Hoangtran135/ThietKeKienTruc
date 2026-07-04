@@ -87,14 +87,22 @@ abstract class CartPriceDecorator implements CartPriceComponent
  */
 class PercentDiscountDecorator extends CartPriceDecorator
 {
-    public function __construct(CartPriceComponent $inner, private int $percent, private string $voucherCode)
-    {
+    public function __construct(
+        CartPriceComponent $inner,
+        private int $percent,
+        private string $voucherCode,
+        private ?int $maxDiscount = null,
+    ) {
         parent::__construct($inner);
     }
 
     public function getDiscount(): int
     {
         $extra = (int) round($this->getSubtotal() * $this->percent / 100);
+
+        if ($this->maxDiscount !== null && $this->maxDiscount > 0) {
+            $extra = min($extra, $this->maxDiscount);
+        }
 
         return $this->inner->getDiscount() + $extra;
     }

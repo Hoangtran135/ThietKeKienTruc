@@ -84,14 +84,14 @@
 
     {{-- Phương thức vận chuyển + thanh toán + voucher --}}
     <div class="payment-method-box mt-4">
-        <form action="{{ route('cart.checkout') }}" method="POST">
+        <form id="checkout-form" action="{{ route('cart.checkout') }}" method="POST">
             @csrf
 
             <h5 style="font-weight:700;margin-bottom:14px;">Phương thức vận chuyển</h5>
             <div class="payment-method-list mb-3">
                 @foreach($shippingOptions as $i => $option)
                 <label class="payment-method-item">
-                    <input type="radio" name="shipping_method" value="{{ $option['code'] }}" {{ $i === 0 ? 'checked' : '' }}>
+                    <input type="radio" name="shipping_method" class="shipping-method-radio" value="{{ $option['code'] }}" {{ $i === 0 ? 'checked' : '' }}>
                     <span class="payment-method-icon"><i class="fa fa-truck"></i></span>
                     <span>
                         <strong>{{ $option['label'] }}</strong>
@@ -102,8 +102,35 @@
             </div>
 
             <h5 style="font-weight:700;margin-bottom:14px;">Mã giảm giá</h5>
-            <div class="mb-3">
-                <input type="text" name="voucher_code" class="form-control" placeholder="Nhập mã voucher (VD: GIAM10, GIAM50K, FREESHIP)">
+            <div class="mb-3 d-flex gap-2">
+                <input type="text" id="voucher-code-input" name="voucher_code" class="form-control"
+                       placeholder="Nhập mã voucher (VD: GIAM10, GIAM50K, FREESHIP)">
+                <button type="button" id="voucher-apply-btn" class="btn-cart-update" style="white-space:nowrap;">
+                    Áp dụng
+                </button>
+            </div>
+            <div id="voucher-message" class="mb-3" style="font-size:13px;"></div>
+
+            {{-- Tóm tắt đơn hàng: cập nhật động qua AJAX khi bấm "Áp dụng"
+                 hoặc đổi phương thức vận chuyển, không cần submit cả form. --}}
+            <div id="order-summary-box" style="background:var(--gray-100, #f7f7f7);border-radius:8px;padding:14px 16px;margin-bottom:16px;">
+                <div class="d-flex justify-content-between mb-1">
+                    <span>Tạm tính:</span>
+                    <span id="summary-subtotal">{{ number_format($total) }}₫</span>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                    <span>Phí vận chuyển:</span>
+                    <span id="summary-shipping">{{ number_format($shippingOptions[0]['fee'] ?? 0) }}₫</span>
+                </div>
+                <div class="d-flex justify-content-between mb-1" id="summary-discount-row" style="display:none !important;">
+                    <span>Giảm giá:</span>
+                    <span id="summary-discount" style="color:var(--red);">-0₫</span>
+                </div>
+                <hr style="margin:8px 0;">
+                <div class="d-flex justify-content-between" style="font-weight:700;font-size:16px;">
+                    <span>Tổng cộng:</span>
+                    <span id="summary-total">{{ number_format($total + ($shippingOptions[0]['fee'] ?? 0)) }}₫</span>
+                </div>
             </div>
 
             <h5 style="font-weight:700;margin-bottom:14px;">Phương thức thanh toán</h5>
@@ -140,5 +167,86 @@
         </form>
     </div>
 </div>
+
+@push('scripts')
+<script>
+(function () {
+    const applyBtn      = document.getElementById('voucher-apply-btn');
+    const voucherInput  = document.getElementById('voucher-code-input');
+    const messageBox    = document.getElementById('voucher-message');
+    const checkoutForm  = document.getElementById('checkout-form');
+    if (!applyBtn || !checkoutForm) return;
+
+    const csrfToken = checkoutForm.querySelector('input[name="_token"]').value;
+
+    function currentShippingMethod() {
+        const checked = checkoutForm.querySelector('.shipping-method-radio:checked');
+        return checked ? checked.value : 'standard';
+    }
+
+    function formatVnd(n) {
+        return new Intl.NumberFormat('vi-VN').format(n) + '₫';
+    }
+
+    function updateSummary(voucherCode) {
+        messageBox.textContent = '';
+        messageBox.style.color = '';
+
+        fetch(`{{ route('cart.preview') }}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                shipping_method: currentShippingMethod(),
+                voucher_code: voucherCode,
+            }),
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    messageBox.textContent = data.message || 'Có lỗi xảy ra.';
+                    messageBox.style.color = '#e74c3c';
+                    return;
+                }
+
+                document.getElementById('summary-subtotal').textContent = formatVnd(data.subtotal);
+                document.getElementById('summary-shipping').textContent = data.shippingFee > 0 ? formatVnd(data.shippingFee) : 'Miễn phí';
+                document.getElementById('summary-total').textContent = formatVnd(data.total);
+
+                const discountRow = document.getElementById('summary-discount-row');
+                if (data.discount > 0) {
+                    document.getElementById('summary-discount').textContent = '-' + formatVnd(data.discount);
+                    discountRow.style.setProperty('display', 'flex');
+                } else {
+                    discountRow.style.setProperty('display', 'none', 'important');
+                }
+
+                if (voucherCode) {
+                    if (data.voucherValid) {
+                        messageBox.textContent = 'Áp dụng mã giảm giá thành công!';
+                        messageBox.style.color = '#27ae60';
+                    } else {
+                        messageBox.textContent = data.voucherMessage || 'Mã voucher không hợp lệ.';
+                        messageBox.style.color = '#e74c3c';
+                    }
+                }
+            })
+            .catch(() => {
+                messageBox.textContent = 'Không thể kết nối máy chủ, vui lòng thử lại.';
+                messageBox.style.color = '#e74c3c';
+            });
+    }
+
+    applyBtn.addEventListener('click', () => updateSummary(voucherInput.value.trim()));
+
+    checkoutForm.querySelectorAll('.shipping-method-radio').forEach(radio => {
+        radio.addEventListener('change', () => updateSummary(voucherInput.value.trim()));
+    });
+})();
+</script>
+@endpush
 @endif
 @endsection

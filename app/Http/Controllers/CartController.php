@@ -68,6 +68,27 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', 'Đã xóa sản phẩm!');
     }
 
+    /**
+     * Tính trước tổng tiền (áp voucher + phí ship) để hiện ngay trên
+     * trang giỏ hàng, không tạo đơn hàng thật.
+     */
+    public function preview(Request $request)
+    {
+        $cart = $this->cartService->get();
+
+        if (empty($cart)) {
+            return response()->json(['success' => false, 'message' => 'Giỏ hàng trống.'], 422);
+        }
+
+        $pricing = CheckoutFacade::preview(
+            cart: $cart,
+            shippingMethodCode: $request->input('shipping_method', 'standard'),
+            voucherCode: $request->input('voucher_code'),
+        );
+
+        return response()->json(array_merge(['success' => true], $pricing));
+    }
+
     public function checkout(Request $request)
     {
         $cart = $this->cartService->get();

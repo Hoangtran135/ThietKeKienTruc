@@ -84,6 +84,7 @@ Route::prefix('cart')->name('cart.')->group(function () {
     Route::post('/add/{id}',           [CartController::class, 'add'])->name('add');
     Route::post('/update',             [CartController::class, 'update'])->name('update');
     Route::delete('/remove/{id}',      [CartController::class, 'remove'])->name('remove');
+    Route::post('/preview',            [CartController::class, 'preview'])->name('preview');
     Route::post('/checkout',           [CartController::class, 'checkout'])->name('checkout')->middleware('customer.auth');
 });
 

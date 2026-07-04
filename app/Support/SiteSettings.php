@@ -55,7 +55,7 @@ class SiteSettings
         return $this->expressShippingFee;
     }
 
-    public function findVoucher(?string $code): ?array
+    public function findVoucher(?string $code, ?int $subtotal = null): ?array
     {
         if ($code === null) {
             return null;
@@ -65,13 +65,14 @@ class SiteSettings
 
         // Ưu tiên lấy từ DB
         try {
-            $voucher = Voucher::findValid($code);
+            $voucher = Voucher::findValid($code, $subtotal);
             if ($voucher) {
                 return [
-                    'type'  => $voucher->type === 'fixed' ? 'amount' : $voucher->type,
-                    'value' => $voucher->value,
-                    'label' => $voucher->type_label,
-                    'model' => $voucher,
+                    'type'         => $voucher->type === 'fixed' ? 'amount' : $voucher->type,
+                    'value'        => $voucher->value,
+                    'max_discount' => $voucher->max_discount,
+                    'label'        => $voucher->type_label,
+                    'model'        => $voucher,
                 ];
             }
         } catch (\Exception) {

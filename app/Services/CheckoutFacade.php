@@ -77,9 +77,50 @@ class CheckoutFacade
         ];
     }
 
+    /**
+     * Tính trước giá đơn hàng (tạm tính, phí ship, giảm giá, tổng cộng)
+     * mà KHÔNG tạo đơn hàng thật — dùng để xem trước khi áp voucher tại
+     * trang giỏ hàng trước khi bấm "Đặt hàng ngay".
+     *
+     * @param array<int|string, array{id:int, number:int, price:float}> $cart
+     * @return array{subtotal:int, shippingFee:int, discount:int, total:int, voucherValid:bool, voucherMessage:?string}
+     */
+    public static function preview(array $cart, string $shippingMethodCode, ?string $voucherCode): array
+    {
+        $subtotal = (int) array_sum(array_map(fn ($i) => $i['price'] * $i['number'], $cart));
+
+        $shippingStrategy = ShippingFeeCalculator::resolve($shippingMethodCode, $subtotal);
+        $shippingFee      = $shippingStrategy->calculate($subtotal);
+
+        $base = new BaseCartPrice($subtotal, $shippingFee);
+
+        $voucherCode = $voucherCode ? trim($voucherCode) : null;
+        $voucherValid = true;
+        $voucherMessage = null;
+
+        if ($voucherCode !== null && $voucherCode !== '') {
+            $voucherData = SiteSettings::getInstance()->findVoucher($voucherCode, $subtotal);
+            $voucherValid = $voucherData !== null;
+            $voucherMessage = $voucherValid
+                ? null
+                : 'Mã voucher không hợp lệ, đã hết hạn, hoặc đơn hàng chưa đạt giá trị tối thiểu.';
+        }
+
+        $priceBreakdown = $voucherValid ? self::applyVoucher($base, $voucherCode) : $base;
+
+        return [
+            'subtotal'       => $priceBreakdown->getSubtotal(),
+            'shippingFee'    => $priceBreakdown->getShippingFee(),
+            'discount'       => $priceBreakdown->getDiscount(),
+            'total'          => $priceBreakdown->getTotal(),
+            'voucherValid'   => $voucherValid,
+            'voucherMessage' => $voucherMessage,
+        ];
+    }
+
     private static function applyVoucher(CartPriceComponent $price, ?string $voucherCode): CartPriceComponent
     {
-        $voucher = SiteSettings::getInstance()->findVoucher($voucherCode);
+        $voucher = SiteSettings::getInstance()->findVoucher($voucherCode, $price->getSubtotal());
 
         if ($voucher === null || $voucherCode === null) {
             return $price;
@@ -88,7 +129,7 @@ class CheckoutFacade
         $code = strtoupper(trim($voucherCode));
 
         return match ($voucher['type']) {
-            'percent'  => new PercentDiscountDecorator($price, $voucher['value'], $code),
+            'percent'  => new PercentDiscountDecorator($price, $voucher['value'], $code, $voucher['max_discount'] ?? null),
             'amount'   => new AmountDiscountDecorator($price, $voucher['value'], $code),
             'freeship' => new FreeshipDecorator($price, $code),
             default    => $price,
